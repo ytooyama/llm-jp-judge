@@ -1,6 +1,4 @@
 from .remote import OpenAI, AzureOpenAI, BedrockAnthropic
-from .local import vLLMClient
-
 
 def load_client(name="azure", **kwargs):
     if name == "openai":
@@ -10,5 +8,8 @@ def load_client(name="azure", **kwargs):
     elif name == "bedrock":
         return BedrockAnthropic(**kwargs)
     elif name == "vllm":
-        return vLLMClient(**kwargs)
+        raise RuntimeError(
+            "vLLM client is disabled in this macOS/Ollama environment. "
+            "Use client=openai with OPENAI_BASE_URL instead."
+        )
     raise ValueError(f"Invalid client name: {name}")

@@ -13,12 +13,13 @@ from dotenv import load_dotenv
 import tqdm
 import tqdm.asyncio
 
-from .local import BaseClient
+#from .local import BaseClient
 
 load_dotenv(override=True)
 
 
-class OpenAI(BaseClient):
+#class OpenAI(BaseClient):
+class OpenAI:    
     def __init__(
         self,
         model_name="gpt-4o-2024-08-06",
@@ -177,7 +178,20 @@ class OpenAI(BaseClient):
                 data, score_extractor, system_prompt, sampling_params=sampling_params
             )
         )
+    
+    # Ollamaだけでこのコードを動かすためのコード追加
+    def get_messages(self, prompt, response, system_prompt=None):
+        messages = []
+        if system_prompt is not None:
+            messages.append({"role": "system", "content": system_prompt})
+        for turn in range(len(prompt)):
+            messages.append({"role": "user", "content": prompt[turn]})
+            if turn < len(response):
+                messages.append({"role": "assistant", "content": response[turn]})
+        return messages
 
+    def fill_sampling_params(self, sampling_params):
+        return {k: v for k, v in sampling_params.items() if v is not None}
 
 class AzureOpenAI(OpenAI):
 
